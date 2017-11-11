@@ -221,14 +221,205 @@ glimpse(datagov)
 <p>The objective is to download the excel file of the Fair Market Rents (FMR)</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG4jIExvYWQgdGhlIGxpYnJhcnkgdGhhdCB3aWxsIGhhbmRsZSB0aGUgZXhjZWwgZmlsZS4gIEluIHRoZSB0dXRvcmlhbCB0aGV5IHVzZSBnZGF0YS4gIEkgd2lsbCB1c2UgeGxzeCBzaW5jZSBpdCBjYW4gaGFuZGxlIGJvdGggeGxzIGFuZCB4bHN4IGRhdGEuICBJIGRvbid0IGtub3cgaWYgZ2RhdGEgaGFuZGxlcyB4bHN4LlxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG4jIExvYWQgdGhlIGxpYnJhcnkgdGhhdCB3aWxsIGhhbmRsZSB0aGUgZXhjZWwgZmlsZS4gIEluIHRoZSB0dXRvcmlhbCB0aGV5IHVzZSBnZGF0YS4gIEkgd2lsbCB1c2UgeGxzeCBzaW5jZSBpdCBjYW4gaGFuZGxlIGJvdGggeGxzIGFuZCB4bHN4IGRhdGEuICBJIGRvbid0IGtub3cgaWYgZ2RhdGEgaGFuZGxlcyB4bHN4LlxuXG5saWJyYXJ5KGdkYXRhKVxuXG5cbnVybCA8LSBcImh0dHA6Ly93d3cuaHVkdXNlci5vcmcvcG9ydGFsL2RhdGFzZXRzL2Ztci9mbXIyMDE1Zi9GWTIwMTVGXzQwNTBfRmluYWwueGxzXCJcbiAgXG5yZW50czwtIHJlYWQueGxzKHVybCwgcGVybCA9IFwiQzovUGVybDY0L2Jpbi9wZXJsLmV4ZVwiKVxuXG5oZWFkKHJlbnRzKVxuXG5cblxuYGBgIn0= -->
 <pre class="r"><code>
-# Load the library that will handle the excel file.  In the tutorial they use gdata.  I will use xlsx since it can handle both xls and xlsx data.  I don't know if gdata handles xlsx.</code></pre>
+# Load the library that will handle the excel file.  In the tutorial they use gdata.  I will use xlsx since it can handle both xls and xlsx data.  I don't know if gdata handles xlsx.
+
+library(gdata)
+
+
+url &lt;- &quot;http://www.huduser.org/portal/datasets/fmr/fmr2015f/FY2015F_4050_Final.xls&quot;
+  
+rents&lt;- read.xls(url, perl = &quot;C:/Perl64/bin/perl.exe&quot;)
+
+head(rents)
+</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Another common form of file storage is zip files. For this we can use download.file() to get into our directory and use as desired.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG4jIFRoZXNlIGFyZSB0aGUgZGlhcnkgb2YgMjAxNC4gIFRoZSBkaWFyeSBvZiAyMDE2IGlzIGF2YWlsYWJsZSBhcyB3ZWxsLlxuXG51cmwgPC0gXCJodHRwOi8vd3d3LmJscy5nb3YvY2V4L3B1bWQvZGF0YS9jb21tYS9kaWFyeTE0LnppcFwiXG5cbiMgZG93bmxvYWRvIC56aXAgZmlsZXMgYW5kIHVuemlwXG5cbmRvd25sb2FkLmZpbGUodXJsLCBkZXN0ID0gXCJkYXRhL2RhdGFzZXQuemlwXCIsIG1vZGUgPSBcIndiXCIpXG5cbiMgdW56aXAgaW4gc2FtZSBmb2xkZXIuICBUaGUgZXhkaXIgbXVzdCBiZSB0aGUgbmFtZSBvZiB0aGUgZm9sZGVyIHdoZXJlIGl0IHdpbGwgYmUgdW56aXBwZWQuICBCZXR0ZXIgZG8gaXQgYWhlYWQgb2YgdGltZSBpbiB0aGUgbWVhbnRpbWUuXG51bnppcChcImRhdGEvZGF0YXNldC56aXBcIiwgZXhkaXIgPSBcImRhdGFcIilcblxuI0NoZWNrIHRoZSBmaWxlcyB3aXRoaW4gdGhlIGZvbGRlclxuXG56aXBGaWxlcyA8LSBsaXN0LmZpbGVzKFwiZGF0YS9kaWFyeTE0XCIpXG5cbiAjIEhvdyBtYW55IGZpbGVzP1xubGVuZ3RoKHppcEZpbGVzKVxuXG5gYGAifQ== -->
+<pre class="r"><code>
+# These are the diary of 2014.  The diary of 2016 is available as well.
+
+url &lt;- &quot;http://www.bls.gov/cex/pumd/data/comma/diary14.zip&quot;
+
+# downloado .zip files and unzip
+
+download.file(url, dest = &quot;data/dataset.zip&quot;, mode = &quot;wb&quot;)
+
+# unzip in same folder.  The exdir must be the name of the folder where it will be unzipped.  Better do it ahead of time in the meantime.
+unzip(&quot;data/dataset.zip&quot;, exdir = &quot;data&quot;)
+
+#Check the files within the folder
+
+zipFiles &lt;- list.files(&quot;data/diary14&quot;)
+
+ # How many files?
+length(zipFiles)
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBMaXN0IHRoZSBmaWxlc1xuemlwRmlsZXNcbmBgYCJ9 -->
+<pre class="r"><code># List the files
+zipFiles</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>If we know the file we want prior to unzipping we could extract without unzipping the whole set</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuemlwRGF0YSA8LSByZWFkLmNzdih1bnooXCJkYXRhL2RhdGFzZXQuemlwXCIsIFwiZGlhcnkxNC9leHBkMTQxLmNzdlwiKSlcblxuZ2xpbXBzZSh6aXBEYXRhKVxuXG5gYGAifQ== -->
+<pre class="r"><code>zipData &lt;- read.csv(unz(&quot;data/dataset.zip&quot;, &quot;diary14/expd141.csv&quot;))
+
+glimpse(zipData)
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5oZWFkKHppcERhdGEpXG5cbmBgYCJ9 -->
+<pre class="r"><code>
+head(zipData)
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Sometimes the zip file is so big it is counterproductive to save it when all we need to work with is one of the internal files (or a group of them), the proposal is to temporarily save the zip, fetch the files we need and then discard the zip.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG4jIENyZWF0ZSBhIHRlbXAuIGZpbGUgbmFtZVxudGVtcCA8LSB0ZW1wZmlsZSgpXG5cbiMgRG93bmxvYWQgdGhlIHppcCB0byB0aGUgdGVtcCBmaWxlIG5hbWUuICBmb3IgdXJsLCBzZWUgaXRlbSAxMDJcbmRvd25sb2FkLmZpbGUodXJsLCB0ZW1wKVxuXG4jIFVzZSB1bnooKSB0byBleHRyYWN0IHRoZSB0YXJnZXQgZmlsZSBmcm9tIHRlbXAuXG56aXBEYXRhMiA8LSByZWFkLmNzdih1bnoodGVtcCwgXCJkaWFyeTE0L2V4cGQxNDEuY3N2XCIpKVxuXG4jIFJlbW92ZSB0aGUgdGVtcCBmaWxlIHZpYSB1bmxpbmsoKVxudW5saW5rKHRlbXApXG5cblxuIyBDaGVjayB6aXBEYXRhMlxuZ2xpbXBzZSh6aXBEYXRhMilcblxuXG5gYGAifQ== -->
+<pre class="r"><code>
+# Create a temp. file name
+temp &lt;- tempfile()
+
+# Download the zip to the temp file name.  for url, see item 102
+download.file(url, temp)
+
+# Use unz() to extract the target file from temp.
+zipData2 &lt;- read.csv(unz(temp, &quot;diary14/expd141.csv&quot;))
+
+# Remove the temp file via unlink()
+unlink(temp)
+
+
+# Check zipData2
+glimpse(zipData2)
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBDaGVjayB0aGUgZGF0YXNldFxuaGVhZCh6aXBEYXRhMilcbmBgYCJ9 -->
+<pre class="r"><code># Check the dataset
+head(zipData2)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBTYXZlIGl0IGludG8gdGhlIHdvcmtpbmcgZGlyXG53cml0ZS5jc3YoemlwRGF0YTIsIFwiZGF0YS96aXBEYXRhMi5jc3ZcIilcblxuYGBgIn0= -->
+<pre class="r"><code># Save it into the working dir
+write.csv(zipData2, &quot;data/zipData2.csv&quot;)
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>One thing is to detect all the links in a webpage using the XML package getHTMLLinks() function.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG4jIExvYWQgdGhlIFhNTCBsaWJyYXJ5XG5saWJyYXJ5KFhNTClcblxuIyBUaGUgdXJsIHRvIHVzZSBpcyB0aGUgTWFyeWxhbmQgU3RhdGUgQm9hcmQgb2YgRWxlY3Rpb25zIHdlYnNpdGVcbnVybCA8LSBcImh0dHA6Ly93d3cuZWxlY3Rpb25zLnN0YXRlLm1kLnVzL2VsZWN0aW9ucy8yMDEyL2VsZWN0aW9uX2RhdGEvaW5kZXguaHRtbFwiXG5saW5rcyA8LSBnZXRIVE1MTGlua3ModXJsKVxuXG4jIEhvdyBtYW55IGxpbmtzIHdlcmUgZmV0Y2hlZD9cbmxlbmd0aChsaW5rcylcblxuXG5gYGAifQ== -->
+<pre class="r"><code>
+# Load the XML library
+library(XML)
+
+# The url to use is the Maryland State Board of Elections website
+url &lt;- &quot;http://www.elections.state.md.us/elections/2012/election_data/index.html&quot;
+links &lt;- getHTMLLinks(url)
+
+# How many links were fetched?
+length(links)
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBDaGVjayBsaW5rcyBzZXRcbmhlYWQobGlua3MpXG5gYGAifQ== -->
+<pre class="r"><code># Check links set
+head(links)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Let’s identify all of the links with the .csv extension</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBXZSB3aWxsIHVzZSByZWd1bGFyIGV4cHJlc3Npb25zIHRvIGlkZW50aWZ5IHRob3NlIGxpbmtzIHRoYXQgY29udGFpbiBjc3ZcbiMgV2Ugd2lsbCByZXF1aXJlIHRoZSBzdGluZ3IgcGFja2FnZVxubGlicmFyeShzdHJpbmdyKVxuXG4jIGV4dHJhY3QgdGhlIG5hbWVzIG9mIGRlc2lyZWQgbGlua3Mgd2l0aCBjc3YgZXh0ZW5zaW9uXG5saW5rc0RhdGEgPC0gbGlua3Nbc3RyX2RldGVjdChsaW5rcywgXCIuY3N2XCIpXVxuXG4jIEhvdyBtYW55IHdlcmUgaWRlbnRpZmllZD9cbmxlbmd0aChsaW5rc0RhdGEpXG5cblxuYGBgIn0= -->
+<pre class="r"><code># We will use regular expressions to identify those links that contain csv
+# We will require the stingr package
+library(stringr)
+
+# extract the names of desired links with csv extension
+linksData &lt;- links[str_detect(links, &quot;.csv&quot;)]
+
+# How many were identified?
+length(linksData)
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>We will download only the first 10 csv files</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG4jIFdlIHdpbGwgdXNlIGEgZm9yIGxvb3AuICBCdXQgZmlyc3QgcmVkdWNlIGxpbmtzRGF0YSBsZW5ndGggdG8gMTBcbmxpbmtzRGF0YSA8LSBoZWFkKGxpbmtzRGF0YSwgMTApXG5cbmZvciAoaSBpbiBzZXFfYWxvbmcobGlua3NEYXRhKSkge1xuICAjIHN0ZXAgMTogcGFzdGUgLmNzdiBwb3J0aW9uIG9mIGxpbmsgdG8gYmFzZSBVUkwgb2YgcGFnZVxuICB1cmwgPC0gcGFzdGUwKFwiaHR0cDovL3d3dy5lbGVjdGlvbnMuc3RhdGUubWQudXMvZWxlY3Rpb25zLzIwMTIvZWxlY3Rpb25fZGF0YS9cIixcbiAgICAgICAgICAgICAgICBsaW5rc0RhdGFbaV0pXG4gIFxuICAjIHNldHAgMjogZG93bmxvYWQgLmNzdiBmaWxlIGFuZCBzYXZlIGFzIGRmXG4gIGRyIDwtIHJlYWQuY3N2KHVybClcbiAgXG4gICMgc3RlcCAzOiByZW5hbWUgZGZcbiAgYXNzaWduKHBhc3RlMChcImRmXCIsIGkpLCBkZilcbn1cblxuYGBgIn0= -->
+<pre class="r"><code>
+# We will use a for loop.  But first reduce linksData length to 10
+linksData &lt;- head(linksData, 10)
+
+for (i in seq_along(linksData)) {
+  # step 1: paste .csv portion of link to base URL of page
+  url &lt;- paste0(&quot;http://www.elections.state.md.us/elections/2012/election_data/&quot;,
+                linksData[i])
+  
+  # setp 2: download .csv file and save as df
+  dr &lt;- read.csv(url)
+  
+  # step 3: rename df
+  assign(paste0(&quot;df&quot;, i), df)
+}
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Let’s check if the 10 df sets exists</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2FwcGx5KHBhc3RlMChcImRmXCIsIDE6MTApLCBleGlzdHMpXG5cbmBgYCJ9 -->
+<pre class="r"><code>sapply(paste0(&quot;df&quot;, 1:10), exists)
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5oZWFkKGRmMSlcblxuYGBgIn0= -->
+<pre class="r"><code>
+head(df1)
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
 </div>
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIlNjcmFwaW5nIEhUTUwiDQpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sNCi0tLQ0KDQotLS0NCnRpdGxlOiAiU2NyYXBpbmcgSFRNTCBCYXNpYyINCm91dHB1dDoNCiAgcGRmX2RvY3VtZW50Og0KICAgIHRvYzogeWVzDQogIGh0bWxfZG9jdW1lbnQ6DQogICAgdG9jOiB5ZXMNCiAgICB0b2NfZGVwdGg6IDINCiAgICB0b2NfZmxvYXQ6IHllcw0KICB3b3JkX2RvY3VtZW50Og0KICAgIHRvYzogeWVzDQp1cmxjb2xvcjogYmx1ZQ0KLS0tDQoNCmBgYHtyIHNldHVwLCBpbmNsdWRlID0gRkFMU0V9DQprbml0cjo6b3B0c19jaHVuayRzZXQoZWNobyA9IFRSVUUsIGV2YWwgPSBUUlVFKQ0KDQpgYGANCg0KDQpgYGB7ciwgbG9hZC1wcmVsaW1pbmFyeS1saWJyYXJpZXMsIGluY2x1ZGUgPSBGQUxTRX0NCmxpYnJhcnkoZHBseXIpDQpsaWJyYXJ5KGdncGxvdDIpDQoNCg0KYGBgDQoNCg0KIyBCYXNpcyBvZiB0aGlzIHR1dG9yaWFsLiAgT2JqZWN0aXZlcw0KDQpUaGlzIHR1dG9yaWFsIGlzIGJhc2ljIGFuZCB3aWxsIGZvY3VzIG9uIHRoZSBmb2xsb3dpbmcgdGFza3M6DQoNCjEuIEltcG9ydGluZyBFeGNlbCBmaWxlcyBmb3VuZCBvbmxpbmUNCjIuIFJlYWRpbmcgSFRNTCB0ZXh0DQozLiBSZWFkaW5nIEhUTUwgdGFibGVzDQo0LiBIYW5kbGluZyBBUElzDQoNCiMgMS4gSW1wb3J0aW5nIEV4Y2VsIGZpbGVzIGZvdW5kIG9ubGluZQ0KDQpUaGUgZmlyc3QgdGFzayBpcyB0byBkb3dubG9hZCB0aGUgY3N2IG9mIHRoZSBmZWRlcmFsIGFnZW5jaWVzIHRoYXQgc3VwcGx5IGRhdGEgdG8gdGhlIFtEYXRhLmdvdl0oaHR0cHM6Ly93d3cuZGF0YS5nb3YvbWV0cmljcykNCg0KVGhpcyBpcyBub3QgY29uc2lkZXJlZCBzb21ldGltZXMgd2Vic2NyYXBpbmcgYXQgYWxsLg0KDQpTaW5jZSBsb3RzIG9mIGRhdGEgaXMgc3RvcmVkIGluIGNzdi9leGNlbCBvciBvdGhlciB0YWJ1bGFyIGZvcm11bGEsIGEgZ29vZCBzdGFydGluZyBwb2ludCBpcyB0byBiZSBhYmxlIHRvIGltcG9ydCB0aG9zZSBmcm9tIHRoZSBzaXRlcyB0aGF0IGhvc3RzIHRoZW0uDQoNCmBgYHtyLCBpbXBvcnQtZGF0YWdvdi1tZXRyaWNzLWRhdGEtY3N2fQ0KDQojIHRoZSB1cmwgZm9yIHRoZSBvbmxpbmUgY3N2DQp1cmwgPC0gImh0dHBzOi8vczMuYW1hem9uYXdzLmNvbS9ic3Atb2NzaXQtcHJvZC1lYXN0LWFwcGRhdGEvZGF0YWdvdi93b3JkcHJlc3MvYWdlbmN5LXBhcnRpY2lwYXRpb24uY3N2Ig0KDQojIHVzZSByZWFkLmNzdiB0byBpbXBvcnQNCmRhdGFnb3YgPC0gcmVhZC5jc3YodXJsLCBzdHJpbmdzQXNGYWN0b3JzID0gRkFMU0UpDQoNCiMgY2hlY2sgdGhlIHNldCBoYXMgYmVlbiByZWFkIHByb3Blcmx5LCBjaGVjayBmaXJzdCByb3dzDQpoZWFkKGRhdGFnb3YpDQpgYGANCg0KYGBge3IsIGltcG9ydC1kYXRhZ292LW1ldHJpY3MtZGF0YS1jc3YtMX0NCiMgQ2hlY2sgZGF0YSBzdW1tYXJpZXMsIGV0Yy4NCg0KZ2xpbXBzZShkYXRhZ292KQ0KDQpgYGANCg0KQXMgY2FuIGJlIHNlZW4gc29tZSBlbnRyaWVzIHdpbGwgaGF2ZSB0byBiZSBmb3JtYXR0ZWQgYXMgZmFjdG9yIChPcmdhbml6YXRpb24uVHlwZSksIGFuZCBhcyBEYXRlIChMYXN0LkVudHJ5KQ0KDQpUaGF0IHdhcyBmb3IgaW1wb3J0aW5nIGNzdiBmaWxlcy4gIE5vdyBmb3IgaW1wb3J0aW5nIEV4Y2VsIGZpbGVzLiAgVGhlcmUgaXMgbm90IGEgYmFzZS1SIGZ1bmN0aW9uLCBzbyBhIHBhY2thZ2UgbXVzdCBiZSBpbmNsdWRlZC4gIFRoZSBwYWNrYWdlIGBnZGF0YWAgZm9yIGluc3RhbmNlIGhhcyBhIHJlYWQueGxzIGZ1bmN0aW9uLiANCg0KVGhlIG9iamVjdGl2ZSBpcyB0byBkb3dubG9hZCB0aGUgZXhjZWwgZmlsZSBvZiB0aGUgRmFpciBNYXJrZXQgUmVudHMgKEZNUikNCg0KYGBge3IsIGltcG9ydC1GTVItZXhjZWx9DQoNCiMgTG9hZCB0aGUgbGlicmFyeSB0aGF0IHdpbGwgaGFuZGxlIHRoZSBleGNlbCBmaWxlLiAgSW4gdGhlIHR1dG9yaWFsIHRoZXkgdXNlIGdkYXRhLiAgSSB3aWxsIHVzZSB4bHN4IHNpbmNlIGl0IGNhbiBoYW5kbGUgYm90aCB4bHMgYW5kIHhsc3ggZGF0YS4gIEkgZG9uJ3Qga25vdyBpZiBnZGF0YSBoYW5kbGVzIHhsc3gu</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIlNjcmFwaW5nIEhUTUwiDQpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sNCi0tLQ0KDQotLS0NCnRpdGxlOiAiU2NyYXBpbmcgSFRNTCBCYXNpYyINCm91dHB1dDoNCiAgcGRmX2RvY3VtZW50Og0KICAgIHRvYzogeWVzDQogIGh0bWxfZG9jdW1lbnQ6DQogICAgdG9jOiB5ZXMNCiAgICB0b2NfZGVwdGg6IDINCiAgICB0b2NfZmxvYXQ6IHllcw0KICB3b3JkX2RvY3VtZW50Og0KICAgIHRvYzogeWVzDQp1cmxjb2xvcjogYmx1ZQ0KLS0tDQoNCmBgYHtyIHNldHVwLCBpbmNsdWRlID0gRkFMU0V9DQprbml0cjo6b3B0c19jaHVuayRzZXQoZWNobyA9IFRSVUUsIGV2YWwgPSBUUlVFKQ0KDQpgYGANCg0KDQpgYGB7ciwgbG9hZC1wcmVsaW1pbmFyeS1saWJyYXJpZXMsIGluY2x1ZGUgPSBGQUxTRX0NCmxpYnJhcnkoZHBseXIpDQpsaWJyYXJ5KGdncGxvdDIpDQoNCg0KYGBgDQoNCg0KIyBCYXNpcyBvZiB0aGlzIHR1dG9yaWFsLiAgT2JqZWN0aXZlcw0KDQpUaGlzIHR1dG9yaWFsIGlzIGJhc2ljIGFuZCB3aWxsIGZvY3VzIG9uIHRoZSBmb2xsb3dpbmcgdGFza3M6DQoNCjEuIEltcG9ydGluZyBFeGNlbCBmaWxlcyBmb3VuZCBvbmxpbmUNCjIuIFJlYWRpbmcgSFRNTCB0ZXh0DQozLiBSZWFkaW5nIEhUTUwgdGFibGVzDQo0LiBIYW5kbGluZyBBUElzDQoNCiMgMS4gSW1wb3J0aW5nIEV4Y2VsIGZpbGVzIGZvdW5kIG9ubGluZQ0KDQpUaGUgZmlyc3QgdGFzayBpcyB0byBkb3dubG9hZCB0aGUgY3N2IG9mIHRoZSBmZWRlcmFsIGFnZW5jaWVzIHRoYXQgc3VwcGx5IGRhdGEgdG8gdGhlIFtEYXRhLmdvdl0oaHR0cHM6Ly93d3cuZGF0YS5nb3YvbWV0cmljcykNCg0KVGhpcyBpcyBub3QgY29uc2lkZXJlZCBzb21ldGltZXMgd2Vic2NyYXBpbmcgYXQgYWxsLg0KDQpTaW5jZSBsb3RzIG9mIGRhdGEgaXMgc3RvcmVkIGluIGNzdi9leGNlbCBvciBvdGhlciB0YWJ1bGFyIGZvcm11bGEsIGEgZ29vZCBzdGFydGluZyBwb2ludCBpcyB0byBiZSBhYmxlIHRvIGltcG9ydCB0aG9zZSBmcm9tIHRoZSBzaXRlcyB0aGF0IGhvc3RzIHRoZW0uDQoNCmBgYHtyLCBpbXBvcnQtZGF0YWdvdi1tZXRyaWNzLWRhdGEtY3N2fQ0KDQojIHRoZSB1cmwgZm9yIHRoZSBvbmxpbmUgY3N2DQp1cmwgPC0gImh0dHBzOi8vczMuYW1hem9uYXdzLmNvbS9ic3Atb2NzaXQtcHJvZC1lYXN0LWFwcGRhdGEvZGF0YWdvdi93b3JkcHJlc3MvYWdlbmN5LXBhcnRpY2lwYXRpb24uY3N2Ig0KDQojIHVzZSByZWFkLmNzdiB0byBpbXBvcnQNCmRhdGFnb3YgPC0gcmVhZC5jc3YodXJsLCBzdHJpbmdzQXNGYWN0b3JzID0gRkFMU0UpDQoNCiMgY2hlY2sgdGhlIHNldCBoYXMgYmVlbiByZWFkIHByb3Blcmx5LCBjaGVjayBmaXJzdCByb3dzDQpoZWFkKGRhdGFnb3YpDQpgYGANCg0KYGBge3IsIGltcG9ydC1kYXRhZ292LW1ldHJpY3MtZGF0YS1jc3YtMX0NCiMgQ2hlY2sgZGF0YSBzdW1tYXJpZXMsIGV0Yy4NCg0KZ2xpbXBzZShkYXRhZ292KQ0KDQpgYGANCg0KQXMgY2FuIGJlIHNlZW4gc29tZSBlbnRyaWVzIHdpbGwgaGF2ZSB0byBiZSBmb3JtYXR0ZWQgYXMgZmFjdG9yIChPcmdhbml6YXRpb24uVHlwZSksIGFuZCBhcyBEYXRlIChMYXN0LkVudHJ5KQ0KDQpUaGF0IHdhcyBmb3IgaW1wb3J0aW5nIGNzdiBmaWxlcy4gIE5vdyBmb3IgaW1wb3J0aW5nIEV4Y2VsIGZpbGVzLiAgVGhlcmUgaXMgbm90IGEgYmFzZS1SIGZ1bmN0aW9uLCBzbyBhIHBhY2thZ2UgbXVzdCBiZSBpbmNsdWRlZC4gIFRoZSBwYWNrYWdlIGBnZGF0YWAgZm9yIGluc3RhbmNlIGhhcyBhIHJlYWQueGxzIGZ1bmN0aW9uLiANCg0KVGhlIG9iamVjdGl2ZSBpcyB0byBkb3dubG9hZCB0aGUgZXhjZWwgZmlsZSBvZiB0aGUgRmFpciBNYXJrZXQgUmVudHMgKEZNUikNCg0KYGBge3IsIGltcG9ydC1GTVItZXhjZWx9DQoNCiMgTG9hZCB0aGUgbGlicmFyeSB0aGF0IHdpbGwgaGFuZGxlIHRoZSBleGNlbCBmaWxlLiAgSW4gdGhlIHR1dG9yaWFsIHRoZXkgdXNlIGdkYXRhLiAgSSB3aWxsIHVzZSB4bHN4IHNpbmNlIGl0IGNhbiBoYW5kbGUgYm90aCB4bHMgYW5kIHhsc3ggZGF0YS4gIEkgZG9uJ3Qga25vdyBpZiBnZGF0YSBoYW5kbGVzIHhsc3guDQoNCmxpYnJhcnkoZ2RhdGEpDQoNCg0KdXJsIDwtICJodHRwOi8vd3d3Lmh1ZHVzZXIub3JnL3BvcnRhbC9kYXRhc2V0cy9mbXIvZm1yMjAxNWYvRlkyMDE1Rl80MDUwX0ZpbmFsLnhscyINCiAgDQpyZW50czwtIHJlYWQueGxzKHVybCwgcGVybCA9ICJDOi9QZXJsNjQvYmluL3BlcmwuZXhlIikNCg0KaGVhZChyZW50cykNCg0KDQoNCmBgYA0KDQoNCg0KQW5vdGhlciBjb21tb24gZm9ybSBvZiBmaWxlIHN0b3JhZ2UgaXMgemlwIGZpbGVzLiAgRm9yIHRoaXMgd2UgY2FuIHVzZSBkb3dubG9hZC5maWxlKCkgdG8gZ2V0IGludG8gb3VyIGRpcmVjdG9yeSBhbmQgdXNlIGFzIGRlc2lyZWQuDQoNCg0KYGBge3IsIGltcG9ydC16aXAtYnVyZWF1LWxhYm9yLXN0YXRzfQ0KDQojIFRoZXNlIGFyZSB0aGUgZGlhcnkgb2YgMjAxNC4gIFRoZSBkaWFyeSBvZiAyMDE2IGlzIGF2YWlsYWJsZSBhcyB3ZWxsLg0KDQp1cmwgPC0gImh0dHA6Ly93d3cuYmxzLmdvdi9jZXgvcHVtZC9kYXRhL2NvbW1hL2RpYXJ5MTQuemlwIg0KDQojIGRvd25sb2FkbyAuemlwIGZpbGVzIGFuZCB1bnppcA0KDQpkb3dubG9hZC5maWxlKHVybCwgZGVzdCA9ICJkYXRhL2RhdGFzZXQuemlwIiwgbW9kZSA9ICJ3YiIpDQoNCiMgdW56aXAgaW4gc2FtZSBmb2xkZXIuICBUaGUgZXhkaXIgbXVzdCBiZSB0aGUgbmFtZSBvZiB0aGUgZm9sZGVyIHdoZXJlIGl0IHdpbGwgYmUgdW56aXBwZWQuICBCZXR0ZXIgZG8gaXQgYWhlYWQgb2YgdGltZSBpbiB0aGUgbWVhbnRpbWUuDQp1bnppcCgiZGF0YS9kYXRhc2V0LnppcCIsIGV4ZGlyID0gImRhdGEiKQ0KDQojQ2hlY2sgdGhlIGZpbGVzIHdpdGhpbiB0aGUgZm9sZGVyDQoNCnppcEZpbGVzIDwtIGxpc3QuZmlsZXMoImRhdGEvZGlhcnkxNCIpDQoNCiAjIEhvdyBtYW55IGZpbGVzPw0KbGVuZ3RoKHppcEZpbGVzKQ0KDQpgYGANCg0KYGBge3IsIGltcG9ydC16aXAtYnVyZWF1LWxhYm9yLXN0YXRzLTF9DQojIExpc3QgdGhlIGZpbGVzDQp6aXBGaWxlcw0KYGBgDQoNCg0KSWYgd2Uga25vdyB0aGUgZmlsZSB3ZSB3YW50IHByaW9yIHRvIHVuemlwcGluZyB3ZSBjb3VsZCBleHRyYWN0IHdpdGhvdXQgdW56aXBwaW5nIHRoZSB3aG9sZSBzZXQNCg0KYGBge3IsIGltcG9ydC16aXAtYnVyZWF1LWxhYm9yLXN0YXRzLTJ9DQp6aXBEYXRhIDwtIHJlYWQuY3N2KHVueigiZGF0YS9kYXRhc2V0LnppcCIsICJkaWFyeTE0L2V4cGQxNDEuY3N2IikpDQoNCmdsaW1wc2UoemlwRGF0YSkNCg0KYGBgDQoNCg0KYGBge3IsIGltcG9ydC16aXAtYnVyZWF1LWxhYm9yLXN0YXRzLTN9DQoNCmhlYWQoemlwRGF0YSkNCg0KYGBgDQoNClNvbWV0aW1lcyB0aGUgemlwIGZpbGUgaXMgc28gYmlnIGl0IGlzIGNvdW50ZXJwcm9kdWN0aXZlIHRvIHNhdmUgaXQgd2hlbiBhbGwgd2UgbmVlZCB0byB3b3JrIHdpdGggaXMgb25lIG9mIHRoZSBpbnRlcm5hbCBmaWxlcyAob3IgYSBncm91cCBvZiB0aGVtKSwgdGhlIHByb3Bvc2FsIGlzIHRvIHRlbXBvcmFyaWx5IHNhdmUgdGhlIHppcCwgZmV0Y2ggdGhlIGZpbGVzIHdlIG5lZWQgYW5kIHRoZW4gZGlzY2FyZCB0aGUgemlwLg0KDQpgYGB7ciwgaW1wb3J0LXppcC1idXJlYXUtbGFib3Itc3RhdHMtNH0NCg0KIyBDcmVhdGUgYSB0ZW1wLiBmaWxlIG5hbWUNCnRlbXAgPC0gdGVtcGZpbGUoKQ0KDQojIERvd25sb2FkIHRoZSB6aXAgdG8gdGhlIHRlbXAgZmlsZSBuYW1lLiAgZm9yIHVybCwgc2VlIGl0ZW0gMTAyDQpkb3dubG9hZC5maWxlKHVybCwgdGVtcCkNCg0KIyBVc2UgdW56KCkgdG8gZXh0cmFjdCB0aGUgdGFyZ2V0IGZpbGUgZnJvbSB0ZW1wLg0KemlwRGF0YTIgPC0gcmVhZC5jc3YodW56KHRlbXAsICJkaWFyeTE0L2V4cGQxNDEuY3N2IikpDQoNCiMgUmVtb3ZlIHRoZSB0ZW1wIGZpbGUgdmlhIHVubGluaygpDQp1bmxpbmsodGVtcCkNCg0KDQojIENoZWNrIHppcERhdGEyDQpnbGltcHNlKHppcERhdGEyKQ0KDQoNCmBgYA0KDQpgYGB7ciwgaW1wb3J0LXppcC1idXJlYXUtbGFib3Itc3RhdHMtNX0NCiMgQ2hlY2sgdGhlIGRhdGFzZXQNCmhlYWQoemlwRGF0YTIpDQpgYGANCg0KDQpgYGB7ciwgaW1wb3J0LXppcC1idXJlYXUtbGFib3Itc3RhdHMtNn0NCiMgU2F2ZSBpdCBpbnRvIHRoZSB3b3JraW5nIGRpcg0Kd3JpdGUuY3N2KHppcERhdGEyLCAiZGF0YS96aXBEYXRhMi5jc3YiKQ0KDQpgYGANCg0KT25lIHRoaW5nIGlzIHRvIGRldGVjdCBhbGwgdGhlIGxpbmtzIGluIGEgd2VicGFnZSB1c2luZyB0aGUgWE1MIHBhY2thZ2UgZ2V0SFRNTExpbmtzKCkgZnVuY3Rpb24uDQoNCmBgYHtyLCBpZGVudGlmeS1saW5rcy1pbi13ZWJwYWdlfQ0KDQojIExvYWQgdGhlIFhNTCBsaWJyYXJ5DQpsaWJyYXJ5KFhNTCkNCg0KIyBUaGUgdXJsIHRvIHVzZSBpcyB0aGUgTWFyeWxhbmQgU3RhdGUgQm9hcmQgb2YgRWxlY3Rpb25zIHdlYnNpdGUNCnVybCA8LSAiaHR0cDovL3d3dy5lbGVjdGlvbnMuc3RhdGUubWQudXMvZWxlY3Rpb25zLzIwMTIvZWxlY3Rpb25fZGF0YS9pbmRleC5odG1sIg0KbGlua3MgPC0gZ2V0SFRNTExpbmtzKHVybCkNCg0KIyBIb3cgbWFueSBsaW5rcyB3ZXJlIGZldGNoZWQ/DQpsZW5ndGgobGlua3MpDQoNCg0KYGBgDQoNCmBgYHtyLCBpZGVudGlmeS1saW5rcy1pbi13ZWJwYWdlLTF9DQojIENoZWNrIGxpbmtzIHNldA0KaGVhZChsaW5rcykNCmBgYA0KDQoNCkxldCdzIGlkZW50aWZ5IGFsbCBvZiB0aGUgbGlua3Mgd2l0aCB0aGUgLmNzdiBleHRlbnNpb24NCg0KYGBge3IsIGlkZW50aWZ5LWxpbmtzLWluLXdlYnBhZ2UtY3N2fQ0KIyBXZSB3aWxsIHVzZSByZWd1bGFyIGV4cHJlc3Npb25zIHRvIGlkZW50aWZ5IHRob3NlIGxpbmtzIHRoYXQgY29udGFpbiBjc3YNCiMgV2Ugd2lsbCByZXF1aXJlIHRoZSBzdGluZ3IgcGFja2FnZQ0KbGlicmFyeShzdHJpbmdyKQ0KDQojIGV4dHJhY3QgdGhlIG5hbWVzIG9mIGRlc2lyZWQgbGlua3Mgd2l0aCBjc3YgZXh0ZW5zaW9uDQpsaW5rc0RhdGEgPC0gbGlua3Nbc3RyX2RldGVjdChsaW5rcywgIi5jc3YiKV0NCg0KIyBIb3cgbWFueSB3ZXJlIGlkZW50aWZpZWQ/DQpsZW5ndGgobGlua3NEYXRhKQ0KDQoNCmBgYA0KDQpXZSB3aWxsIGRvd25sb2FkIG9ubHkgdGhlIGZpcnN0IDEwIGNzdiBmaWxlcw0KDQpgYGB7ciwgaWRlbnRpZnktbGlua3MtaW4td2VicGFnZS1kb3dubG9hZC0xMC1jc3Z9DQoNCiMgV2Ugd2lsbCB1c2UgYSBmb3IgbG9vcC4gIEJ1dCBmaXJzdCByZWR1Y2UgbGlua3NEYXRhIGxlbmd0aCB0byAxMA0KbGlua3NEYXRhIDwtIGhlYWQobGlua3NEYXRhLCAxMCkNCg0KZm9yIChpIGluIHNlcV9hbG9uZyhsaW5rc0RhdGEpKSB7DQogICMgc3RlcCAxOiBwYXN0ZSAuY3N2IHBvcnRpb24gb2YgbGluayB0byBiYXNlIFVSTCBvZiBwYWdlDQogIHVybCA8LSBwYXN0ZTAoImh0dHA6Ly93d3cuZWxlY3Rpb25zLnN0YXRlLm1kLnVzL2VsZWN0aW9ucy8yMDEyL2VsZWN0aW9uX2RhdGEvIiwNCiAgICAgICAgICAgICAgICBsaW5rc0RhdGFbaV0pDQogIA0KICAjIHNldHAgMjogZG93bmxvYWQgLmNzdiBmaWxlIGFuZCBzYXZlIGFzIGRmDQogIGRyIDwtIHJlYWQuY3N2KHVybCkNCiAgDQogICMgc3RlcCAzOiByZW5hbWUgZGYNCiAgYXNzaWduKHBhc3RlMCgiZGYiLCBpKSwgZGYpDQp9DQoNCmBgYA0KDQpMZXQncyBjaGVjayBpZiB0aGUgMTAgZGYgc2V0cyBleGlzdHMNCg0KDQpgYGB7ciwgY2hlY2stZGZzfQ0Kc2FwcGx5KHBhc3RlMCgiZGYiLCAxOjEwKSwgZXhpc3RzKQ0KDQpgYGANCg0KYGBge3IsIGNoZWNrLWRmOH0NCg0KaGVhZChkZjEpDQoNCmBgYA0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0KDQoNCg0K</div>
 
 
 

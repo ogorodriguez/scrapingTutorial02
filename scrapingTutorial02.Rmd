@@ -76,3 +76,204 @@ The objective is to download the excel file of the Fair Market Rents (FMR)
 ```{r, import-FMR-excel}
 
 # Load the library that will handle the excel file.  In the tutorial they use gdata.  I will use xlsx since it can handle both xls and xlsx data.  I don't know if gdata handles xlsx.
+
+library(gdata)
+
+
+url <- "http://www.huduser.org/portal/datasets/fmr/fmr2015f/FY2015F_4050_Final.xls"
+  
+rents<- read.xls(url, perl = "C:/Perl64/bin/perl.exe")
+
+head(rents)
+
+
+
+```
+
+
+
+Another common form of file storage is zip files.  For this we can use download.file() to get into our directory and use as desired.
+
+
+```{r, import-zip-bureau-labor-stats}
+
+# These are the diary of 2014.  The diary of 2016 is available as well.
+
+url <- "http://www.bls.gov/cex/pumd/data/comma/diary14.zip"
+
+# downloado .zip files and unzip
+
+download.file(url, dest = "data/dataset.zip", mode = "wb")
+
+# unzip in same folder.  The exdir must be the name of the folder where it will be unzipped.  Better do it ahead of time in the meantime.
+unzip("data/dataset.zip", exdir = "data")
+
+#Check the files within the folder
+
+zipFiles <- list.files("data/diary14")
+
+ # How many files?
+length(zipFiles)
+
+```
+
+```{r, import-zip-bureau-labor-stats-1}
+# List the files
+zipFiles
+```
+
+
+If we know the file we want prior to unzipping we could extract without unzipping the whole set
+
+```{r, import-zip-bureau-labor-stats-2}
+zipData <- read.csv(unz("data/dataset.zip", "diary14/expd141.csv"))
+
+glimpse(zipData)
+
+```
+
+
+```{r, import-zip-bureau-labor-stats-3}
+
+head(zipData)
+
+```
+
+Sometimes the zip file is so big it is counterproductive to save it when all we need to work with is one of the internal files (or a group of them), the proposal is to temporarily save the zip, fetch the files we need and then discard the zip.
+
+```{r, import-zip-bureau-labor-stats-4}
+
+# Create a temp. file name
+temp <- tempfile()
+
+# Download the zip to the temp file name.  for url, see item 102
+download.file(url, temp)
+
+# Use unz() to extract the target file from temp.
+zipData2 <- read.csv(unz(temp, "diary14/expd141.csv"))
+
+# Remove the temp file via unlink()
+unlink(temp)
+
+
+# Check zipData2
+glimpse(zipData2)
+
+
+```
+
+```{r, import-zip-bureau-labor-stats-5}
+# Check the dataset
+head(zipData2)
+```
+
+
+```{r, import-zip-bureau-labor-stats-6}
+# Save it into the working dir
+write.csv(zipData2, "data/zipData2.csv")
+
+```
+
+One thing is to detect all the links in a webpage using the XML package getHTMLLinks() function.
+
+```{r, identify-links-in-webpage}
+
+# Load the XML library
+library(XML)
+
+# The url to use is the Maryland State Board of Elections website
+url <- "http://www.elections.state.md.us/elections/2012/election_data/index.html"
+links <- getHTMLLinks(url)
+
+# How many links were fetched?
+length(links)
+
+
+```
+
+```{r, identify-links-in-webpage-1}
+# Check links set
+head(links)
+```
+
+
+Let's identify all of the links with the .csv extension
+
+```{r, identify-links-in-webpage-csv}
+# We will use regular expressions to identify those links that contain csv
+# We will require the stingr package
+library(stringr)
+
+# extract the names of desired links with csv extension
+linksData <- links[str_detect(links, ".csv")]
+
+# How many were identified?
+length(linksData)
+
+
+```
+
+We will download only the first 10 csv files
+
+```{r, identify-links-in-webpage-download-10-csv}
+
+# We will use a for loop.  But first reduce linksData length to 10
+linksData <- head(linksData, 10)
+
+for (i in seq_along(linksData)) {
+  # step 1: paste .csv portion of link to base URL of page
+  url <- paste0("http://www.elections.state.md.us/elections/2012/election_data/",
+                linksData[i])
+  
+  # setp 2: download .csv file and save as df
+  dr <- read.csv(url)
+  
+  # step 3: rename df
+  assign(paste0("df", i), df)
+}
+
+```
+
+Let's check if the 10 df sets exists
+
+
+```{r, check-dfs}
+sapply(paste0("df", 1:10), exists)
+
+```
+
+```{r, check-df8}
+
+head(df1)
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
