@@ -253,23 +253,106 @@ head(df8)
 
 ```
 
+# Excercises 1
+
+1. Import the following csv file directly from this url: https://bradleyboehmke.github.io/public/data/reddit.csv.
 
 
+```{r, ex1.1-import-csv}
+
+url <- "https://bradleyboehmke.github.io/public/data/reddit.csv"
+
+reddit <- read.csv(url, stringsAsFactors = FALSE)
+
+# Check the data set
+glimpse(reddit)
+
+```
 
 
+```{r, ex1-import-csv-10}
+# Let's save it to our data file
+reddit <- write.csv(reddit, "data/reddit.csv")
+
+```
 
 
+2. Import the .xlsx file directly from this url: http://www.huduser.gov/portal/datasets/fmr/fmr2017/FY2017_4050_FMR.xlsx.
+
+```{r, ex1.2-import-xlsx}
+
+url <- "http://www.huduser.gov/portal/datasets/fmr/fmr2017/FY2017_4050_FMR.xlsx"
+
+fmr2017 <- read.xls(url, perl = "C:/Perl64/bin/perl.exe")
+
+# Check the dataset
+glimpse(fmr2017)
+
+```
+
+```{r, ex1.2-import-xlsx-10}
+head (fmr2017)
+```
 
 
+3. Go to this University of Dayton webpage and Download weather data for a selected city.  Download the data for all the Alabama cities.
+
+http://academic.udayton.edu/kissock/http/Weather/citylistUS.htm
 
 
+```{r, ex1.3-import-weather-data}
+
+# First let's get all the links on the page
+url <- "http://academic.udayton.edu/kissock/http/Weather/citylistUS.htm"
+
+links <- getHTMLLinks(url)
+
+# Check the first ten links
+head(links, 10)
+
+```
+
+By looking at the webpage we can see that all the extensions are txt time series data.  
+
+All the cities are coded using the two letter abbreviation of the state as prefix, so we can use regular expression to identify those that correspond to Alabama.  Prefix = "AL"
 
 
+```{r, ex1.3-import-weather-data-10}
 
+# Extract the links corresponding to the four cities in Alabama
+linksDataAl <- links[str_detect(links, "^(.+)/AL.+")]
 
+# Check the extraction
+linksDataAl
 
+```
 
+```{r, ex1.3-import-weather-data-20}
 
+# Let's get the data into the R session
+
+for (i in seq_along(linksDataAl)) {
+  url <- paste0("http://academic.udayton.edu/kissock/http/Weather/",linksDataAl[i])
+  df <- read.csv(url, header = FALSE, sep = "")
+  assign(paste0("df", i), df)
+}
+
+# Let's check the files exists in our R session
+sapply(paste0("df", 1:4), exists)
+
+```
+
+```{r, ex1.3-import-weather-data-30}
+
+# Let's see one of the datasets
+
+glimpse(df1)
+
+```
+
+```{r}
+head(df1)
+```
 
 
 
