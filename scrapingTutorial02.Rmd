@@ -1,17 +1,12 @@
 ---
-title: "Scraping HTML"
-output: html_notebook
----
-
----
 title: "Scraping HTML Basic"
 output:
-  pdf_document:
-    toc: yes
   html_document:
     toc: yes
     toc_depth: 2
     toc_float: yes
+  pdf_document:
+    toc: yes
   word_document:
     toc: yes
 urlcolor: blue
@@ -26,6 +21,9 @@ knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
 ```{r, load-preliminary-libraries, include = FALSE}
 library(dplyr)
 library(ggplot2)
+library(pander)
+library(rvest)
+library(XML)
 
 
 ```
@@ -353,6 +351,345 @@ glimpse(df1)
 ```{r}
 head(df1)
 ```
+
+
+# 2. Scraping HTML Text
+
+The basis of webscraping will be done attacking these basics elements of which web pages are made of:
+
+
+    *  <h1>, <h2>,.,<h6>: Largest heading, second largest heading, etc.
+    *  <p>: Paragraph elements
+    *  <ul>: Unordered bulleted list
+    *  <ol>: Ordered list
+    *  <li>: Individual List item
+    *  <div>: Division or section
+    *  <table>: Table
+
+Paragraphs in an HTML document can be identified with the <p>.  It is through these tags that we can start extracting information via scraping.  These tags are also called nodes.
+
+The web page to disect using this example is the [Wikipedia page on web scraping](https://en.wikipedia.org/wiki/Web_scraping).  We will use for this url the variable:
+`r wikiUrl <- "https://en.wikipedia.org/wiki/Web_scraping"`
+
+*How to scrape HTML nodes*
+
+The package to use is rvest.
+
+To extract text from a webpage we specify what HTML elements we want to select by using html_node().  
+
+For example, if we want to scrape the heading of the Wikipedia page, we select it identifying the all the `h1` nodes on the webpage.  
+
+```{r, identify-h1-sample-page}
+
+# Load the rvest package
+
+
+# We need to read in the webpage using read_html()
+scrapingWiki <- read_html("https://en.wikipedia.org/wiki/Web_scraping")
+
+scrapingWiki %>% 
+  html_nodes("h1")
+
+
+```
+
+To extract only the text and not all the HTML syntax we use html_text()
+
+
+```{r, identify-hi-sample-page-10}
+scrapingWiki %>% 
+  html_nodes("h1") %>% 
+  html_text()
+
+```
+
+To identify all the second level headings, we follow the same process.  In this case there 8 second level headings <h2>
+
+```{r, identify-h2-sample-page-10}
+scrapingWiki %>% 
+  html_nodes("h2") %>% 
+  html_text()
+
+
+```
+
+Now let's select all the paragraph nodes.  How many paragraph does this articl have?
+
+```{r, identify-p-sample-page-10}
+# We will assign a varible called pNodes
+
+pNodes <- scrapingWiki %>% 
+  html_nodes("p")
+
+length(pNodes)
+
+```
+
+Let's show the first elements of pNodes (the first 6 paragraphs)
+
+
+```{r, identify-p-sample-page-20}
+head(pNodes)
+
+
+```
+
+
+Let's select the text only without the HTML syntax
+
+```{r, identify-p-sample-page-30}
+
+pText <- pNodes %>% 
+          html_text()
+head(pText)
+
+```
+
+An important note, this has only captured the text in paragraph, not the bulleted lists.  Just as the h1 example only captured the heading nodes.  
+
+Items in lists are tagged `ul` 
+
+```{r, identify-ul-sample-page}
+ulText <- scrapingWiki %>% 
+              html_nodes("ul") %>% 
+              html_text()
+              
+
+length(ulText)
+
+```
+
+Let's identify the first list which is the one of the table of contents
+
+```{r, identify-ul-sample-page-10}
+ulText[1]
+
+
+```
+
+If we want to read the first 200 characters of a list within a webpage:
+
+```{r, identify-ul-sample-page-20}
+# We use the substr() function
+substr(ulText[2], start = 1, stop = 200)
+
+```
+
+There is a difference between: ul, ol, il.  ul is for unordered lists, that is the bullet points.  ol is for the numbered lists, ordered.  li is for individual items with the lists.
+
+```{r, identify-li-sample-page}
+liText <- scrapingWiki %>% 
+            html_nodes("li") %>% 
+            html_text()
+
+length(liText)
+
+
+
+```
+
+One way to capture all text (regardless of node) within the page is using the `div`
+
+```{r, identify-div-sample-page}
+allText <- scrapingWiki %>% 
+            html_nodes("div") %>% 
+            html_text()
+
+head(allText)
+
+```
+
+
+*Scraping Specific HTML Nodes*
+
+To scrape specific content we need to be more focused in our HTML selection process.
+
+We use selectorgadget to identify which parts to include in our code.
+
+
+```{r, select-specific-html-nodes}
+
+bodyText <- scrapingWiki %>% 
+              html_nodes(".mw-parser-output") %>% 
+              html_text()
+
+# read the first 207 characters
+substr(bodyText, start = 1, stop = 500)
+```
+
+
+```{r, select-specific-html-nodes-10}
+
+# read the last 500 characters
+substr(bodyText, star = nchar(bodyText) - 550, stop = nchar(bodyText))
+
+```
+
+
+Selecting the part we are interested in we can select only the elements we require for instance.
+
+```{r, select-specific-html-nodes-20}
+# Scraping a specifc heading
+scrapingWiki %>% 
+  html_nodes("#Techniques") %>% 
+  html_text()
+
+```
+
+Number of characters of previous element: `r scrapingWiki %>%   html_nodes("#Techniques") %>%   html_text() %>%   nchar()`
+
+```{r, select-specific-html-nodes-30}
+# Scraping a specific paragraph.  better with the code Inspector in the development tools.
+scrapingWiki %>% 
+  html_nodes(".mw-parser-output > p:nth-child(13)") %>% 
+  html_text()
+
+```
+
+```{r, select-specific-html-nodes-40}
+# Scraping a specific list
+scrapingWiki %>% 
+  html_nodes(".div-col") %>% 
+  html_text()
+
+```
+
+```{r, select-specific-html-nodes-50}
+# Scraping a specific reference list item
+scrapingWiki %>% 
+  html_nodes("#cite_note-22") %>% 
+  html_text()
+
+```
+
+*Cleaning up*
+
+Webscraping yields results that require cleaning (as with every action at this stage in the data collection workflow)
+
+For example: the list in See also is scraped the following way:
+
+
+```{r, cleaning-up}
+scrapingWiki %>% 
+  html_nodes(".div-col") %>% 
+  html_text()
+```
+
+The items are separated by `\n` which HTML that identifies a new line.
+
+This can be cleaned using string manipulation
+
+```{r, cleaning-up-10}
+# We will use strsplit to separarte the itmes by \n
+scrapingWiki %>% 
+  html_nodes(".div-col") %>% 
+  html_text() %>% 
+  strsplit(split = "\n") %>% 
+  unlist() %>% 
+  .[.!= ""]       # This removes a set of quotation marks ("") that appear first on list
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
