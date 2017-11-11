@@ -1,0 +1,78 @@
+---
+title: "Scraping HTML"
+output: html_notebook
+---
+
+---
+title: "Scraping HTML Basic"
+output:
+  pdf_document:
+    toc: yes
+  html_document:
+    toc: yes
+    toc_depth: 2
+    toc_float: yes
+  word_document:
+    toc: yes
+urlcolor: blue
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = TRUE)
+
+```
+
+
+```{r, load-preliminary-libraries, include = FALSE}
+library(dplyr)
+library(ggplot2)
+
+
+```
+
+
+# Basis of this tutorial.  Objectives
+
+This tutorial is basic and will focus on the following tasks:
+
+1. Importing Excel files found online
+2. Reading HTML text
+3. Reading HTML tables
+4. Handling APIs
+
+# 1. Importing Excel files found online
+
+The first task is to download the csv of the federal agencies that supply data to the [Data.gov](https://www.data.gov/metrics)
+
+This is not considered sometimes webscraping at all.
+
+Since lots of data is stored in csv/excel or other tabular formula, a good starting point is to be able to import those from the sites that hosts them.
+
+```{r, import-datagov-metrics-data-csv}
+
+# the url for the online csv
+url <- "https://s3.amazonaws.com/bsp-ocsit-prod-east-appdata/datagov/wordpress/agency-participation.csv"
+
+# use read.csv to import
+datagov <- read.csv(url, stringsAsFactors = FALSE)
+
+# check the set has been read properly, check first rows
+head(datagov)
+```
+
+```{r, import-datagov-metrics-data-csv-1}
+# Check data summaries, etc.
+
+glimpse(datagov)
+
+```
+
+As can be seen some entries will have to be formatted as factor (Organization.Type), and as Date (Last.Entry)
+
+That was for importing csv files.  Now for importing Excel files.  There is not a base-R function, so a package must be included.  The package `gdata` for instance has a read.xls function. 
+
+The objective is to download the excel file of the Fair Market Rents (FMR)
+
+```{r, import-FMR-excel}
+
+# Load the library that will handle the excel file.  In the tutorial they use gdata.  I will use xlsx since it can handle both xls and xlsx data.  I don't know if gdata handles xlsx.
