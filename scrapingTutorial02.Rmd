@@ -624,17 +624,49 @@ body700
 ```
 
 
-What if we use tidytext to create a tibble?
+# Excercises 2
 
-```{r}
-library(readr)
-library(tidytext)
+Extract all the text from the main body content for the Wikipedia entry on the [War in Afghanistan](https://en.wikipedia.org/wiki/War_in_Afghanistan_(2001%E2%80%932014). Can you scrape just the references on this page?
 
-data_frame(text = body700) %>%
-  unnest_tokens(word, text)
+```{r, ex2.2-extract-body}
+
+wikiAf <- "https://en.wikipedia.org/wiki/War_in_Afghanistan_(2001%E2%80%932014)"
+
+# read the html of the wiki
+scrapewikiAf <- read_html(wikiAf)
+
+# Let's get the text of the wiki main body content
+bodyAf <- scrapewikiAf %>% 
+  html_nodes("#bodyContent") %>% 
+  html_text()
+
+bodyAf
+
 ```
 
+```{r, ex2.2-extract-body-ref}
+bodyRef <- scrapewikiAf %>% 
+            html_nodes("div.reflist:nth-child(451)") %>% 
+            html_text()
 
+bodyRef
+
+```
+
+Now let's clean this list of references.  But first let's get the list of references.
+
+```{r, ex2.2-extract-body-ref-10}
+bodyRefClean <- bodyRef %>% 
+                  strsplit(split = "\n") %>% 
+                  unlist() %>% 
+                  str_replace_all("\\^", "") %>% 
+                  str_replace_all("\"", "") %>% 
+                  str_trim(side = "both") %>% 
+                  .[. != ""]
+
+bodyRefClean[1:10]
+
+```
 
 
 
