@@ -24,6 +24,7 @@ library(ggplot2)
 library(pander)
 library(rvest)
 library(XML)
+library(stringr)
 
 
 ```
@@ -590,8 +591,48 @@ scrapingWiki %>%
 
 ```
 
+When scraping the main body (bodyText) there were many characters that made the text messy.  This can be cleaned up using regex so it consists of only text.
+
+```{r, cleaning-up-20}
+# We will use the stringr package.
+
+# read the last 700 characters of bodyText
+substr(bodyText, start = nchar(bodyText)- 700, stop = nchar(bodyText))
 
 
+```
+
+The characters that have to removed and substituted by a " " are:
+ * `\n`
+ * `\"`
+ * `^`
+
+
+```{r, cleaning-up-30}
+
+# Cleaning up
+
+body700 <- bodyText %>% 
+  str_replace_all("\n", " ") %>% 
+  str_replace_all("[\\^]", " ") %>% 
+  str_replace_all("\"", " ") %>% 
+  str_trim(side = "both") %>% 
+  substr(start = nchar(bodyText) - 700, stop = nchar(bodyText))
+  
+body700
+
+```
+
+
+What if we use tidytext to create a tibble?
+
+```{r}
+library(readr)
+library(tidytext)
+
+data_frame(text = body700) %>%
+  unnest_tokens(word, text)
+```
 
 
 
