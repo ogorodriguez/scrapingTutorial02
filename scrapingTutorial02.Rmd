@@ -213,6 +213,11 @@ length(linksData)
 
 ```
 
+
+```{r, identify-links-in-webpage-csv-10}
+head(linksData, 10)
+```
+
 We will download only the first 10 csv files
 
 ```{r, identify-links-in-webpage-download-10-csv}
@@ -226,7 +231,7 @@ for (i in seq_along(linksData)) {
                 linksData[i])
   
   # setp 2: download .csv file and save as df
-  dr <- read.csv(url)
+  df <- read.csv(url)
   
   # step 3: rename df
   assign(paste0("df", i), df)
@@ -244,7 +249,7 @@ sapply(paste0("df", 1:10), exists)
 
 ```{r, check-df8}
 
-head(df1)
+head(df8)
 
 ```
 
