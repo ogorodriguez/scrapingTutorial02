@@ -668,6 +668,86 @@ bodyRefClean[1:10]
 
 ```
 
+# Scraping HTML Table Data
+
+The basics of scraping table data is via the rvest package and the XML package.
+
+The focus will be the [Bureau of Labor Statistics Employment Webpage.](https://www.bls.gov/web/empsit/cesbmart.htm)
+
+The tag or node in HTML for tables is `<table>`.  In the html_nodes() function we select the nodes with table tags.
+
+Let's get the tables found on https://www.bls.gov/web/empsit/cesbmart.htm
+
+
+```{r, scrape-tables-10}
+
+# First let's read in the webpage
+webpage <- read_html("https://www.bls.gov/web/empsit/cesbmart.htm")
+
+# identify or fetch all of the table using html_nodes()
+tbls <- webpage %>% 
+          html_nodes("table")
+
+head(tbls)
+
+```
+
+html_nodes() function does not parse the data.  It is only a CSS selector.  In order to parse we need to use the html_table() function.
+
+There are two ways to do this with this example.  With tbls, we can select the tables we want by subsetting the vector.  Say Tables2 and Table3 are indexes [3] and [4] respectively.
+
+```{r, scrape-tables-20}
+tblsLis <- webpage %>% 
+              html_nodes("table") %>% 
+              .[3:4] %>% 
+              html_table(fill = TRUE)
+
+glimpse(tblsLis)
+
+```
+
+Another way is to parse each table separately.
+
+```{r, scrape-tables-30}
+table2 <- webpage %>% 
+            html_nodes("#Table2") %>% 
+            html_table(fill = TRUE)
+
+glimpse(table2)
+table2
+
+
+```
+
+
+```{r, scrape-tables-40}
+table3 <- webpage %>% 
+            html_nodes("#Table3") %>% 
+            html_table(fill = TRUE)
+
+glimpse(table3)
+table3
+
+
+```
+
+Let's fix table2 that has heading repeated due to running headings in original table
+
+```{r}
+head(table2[[1]], 4)
+
+
+# remove row 1 that includes part of the headings
+table2[[1]] <- table2[[1]][-1,]
+
+# rename table headings
+colnames(table2[[1]]) <- c("CES_Code", "Ind_Title", "Benchmark",
+                            "Estimate", "Amt_Diff", "Pct_Diff")
+
+head(table2[[1]], 4)
+```
+
+
 
 
 
