@@ -894,6 +894,14 @@ climate <- ncdc(datasetid = "GHCND",
 
 
 
+*nytimes API*
+
+The newyork times api offers a lots of api to choose from.  PENDING.
+
+
+
+
+
 
 
 
