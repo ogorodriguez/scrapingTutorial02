@@ -35,3 +35,12 @@ for(i in seq_along(layoffs$Results$series[[1]]$data)) {
 }
 seq_along(layoffs$Results$series[[1]]$data)
 df
+
+
+
+=====================
+  
+# Testing the noaa ncdc code
+  
+  ncdc(datasetid='GHCND', locationid = 'FIPS:02', startdate = '2010-05-01',
+       enddate = '2010-05-10', token = "AdwtGjiCyfGNMDfJNNocadAVeLHtmUqX")

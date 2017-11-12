@@ -748,6 +748,206 @@ head(table2[[1]], 4)
 ```
 
 
+####### THE EXCERCISES ARE PENDING TO BE DONE######
+
+
+# Leveraging APIs to scrape Data
+
+API: Application programming interface is a method of communicating between software and program.
+
+Some pointers with working with API:
+a.  The URL of the organization data is being pulled from
+b.  The data to be pulled.
+c.  The data content.
+
+To access the data there is a form of identification and authorization
+
+a. API key or token
+b. OAuth is the form of authorization process
+
+The key rpackage here is the `httr` package.
+
+
+Before dwelling into an API, it is good to check whether there is a package in R for that API. 
+
+The blsAPI is the API for the Bureau of Labor Statistics in the USA.  No key / token or OAuth is required.  Only knowledge on the data.
+
+For this we will to load or install the corresponding packages throughout the example
+
+*Bureau of Labour API example*
+
+```{r, include=FALSE}
+# Load the corresponding packages
+library(rjson)
+library(blsAPI)
+
+```
+
+It is important to read the documentation on how to pull the data.  For the blsAPI an understanding of the series identifier is important because it tells you which code represent regions and which parts represent demographics or industries.
+
+In this example we are interested in layoffs
+
+```{r, example-blsAPI-layoffs}
+# This will pull in data of layoffs for all the US (SOO) across all industries (N0001)
+
+layoffsJson <- blsAPI("MLUMS00NN0001003") # This returns a JSON object
+
+layoffs <- fromJSON(layoffsJson) # This returns an r object, a list, from a Json object
+
+str(layoffs) # In this case str() works better than glimpse()
+
+```
+
+
+The object has 4 lists and we are interested in the list that says data.  To extract the information and convert it to a table.
+
+```{r, example-blsAPI-layoffs-10}
+# First let's create an empty data frame so we can save the structure
+
+layoff_df <- data.frame(NULL)
+
+# Extract the data of interest from each nested year-month list.
+
+for(i in seq_along(layoffs$Results$series[[1]]$data)) {
+        df <- data.frame(layoffs$Results$series[[1]]$data[i][[1]][1:4])
+        layoff_df <- rbind(layoff_df, df)
+}
+
+
+layoff_df
+
+```
+
+The dataset retrieved requires cleaning and preprocessing but it is captured.
+
+
+*NOAA Example*
+
+Let's load the NOAA r package.  In this case the key or token is emailed prior requests in their page:
+http://www.ncdc.noaa.gov/cdo-web/token
+
+The data to pull is the data sent from the climate stations in a given area provided a FIPS code is passed on the function `ncdc_stations` , and a dataset is selected.  In this case the dataset from the GHCND is going to be used to get the information from the county of the author of the tutorial.
+
+```{r example-noaa}
+
+# Load the library
+library(rnoaa)
+
+stations <- ncdc_stations(datasetid = "GHCND",
+                          locationid = "FIPS:39113",
+                          token = "AdwtGjiCyfGNMDfJNNocadAVeLHtmUqX") # token must be in ""
+
+stations # returns a list where the fourth element is a data table very well structured indeed.
+```
+
+
+```{r, example-noaa-10}
+
+# Let's select only the data item
+stations$data
+
+```
+
+I am going to pull the data from Wake County north caroline fips 37,183
+
+
+```{r, example-noaa-wake-county-nc}
+
+stationsWC <- ncdc_stations(datasetid = "GHCND",
+                          locationid = "FIPS:37183",
+                          token = "AdwtGjiCyfGNMDfJNNocadAVeLHtmUqX")
+
+stationsWC$data  
+```
+
+```{r, example-noaa-20}
+
+# Let's arrange the data so that I see which lattitude is closest to leesville Road where my sister lives
+# 35.870678
+
+
+stationsWC$data %>% 
+  arrange(latitude)
+```
+
+The answer is `35.8624	RALEIGH 5.9 ENE, NC US`.  So I need to get the id of this station to query it.
+
+```{r, example-noaa-30}
+
+stationsWC$data %>% 
+  filter(name == "RALEIGH 5.9 ENE, NC US") %>% 
+  select(mindate, maxdate, id)
+
+```
+
+
+To get the data from a staion we simply pull the ncdc() function with the information in the previous result (item 881) and the dataset needed: the GHCND
+
+```{r, example-noaa-40}
+climate <- ncdc(datasetid = "GHCND",
+                startdate = "2017-10-05",
+                enddate = "2017-11-12",
+                stationid = "GHCND:US1NCWK0013",
+                token = "AdwtGjiCyfGNMDfJNNocadAVeLHtmUqX")
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
